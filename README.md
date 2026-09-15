@@ -11,6 +11,7 @@ the whole operation explained in plain English, no meeting required.
 
 | Repo | What it runs | Deployed at |
 |---|---|---|
+| [daisychain-ops](https://github.com/daisychainsd/daisychain-ops) | How the label runs: Operations Map, SOP drafts, consultant docs, and the label's Claude Code skills (`chain-mail`, `offer`, `gdrive`) | private repo; live SOPs at [daisychainsd.com/ops](https://daisychainsd.com/ops) |
 | [daisychain-site](https://github.com/daisychainsd/daisychain-site) | Public site + store: releases, streaming, digital downloads, merch (Shopify), unlimited pass, Sanity CMS | [daisychainsd.com](https://daisychainsd.com) (Vercel) |
 | [dc-email-api](https://github.com/daisychainsd/dc-email-api) | Subscriber sync: Bandcamp + Shotgun + Laylo → Beehiiv newsletter list | dc-email-api.vercel.app (Vercel) |
 | [chain-mail](https://github.com/daisychainsd/chain-mail) | Newsletter HTML design system — sections built here, sent from Beehiiv | local / Beehiiv |
