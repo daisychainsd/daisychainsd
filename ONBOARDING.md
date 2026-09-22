@@ -21,9 +21,10 @@ downloads (or a $99 all-catalog pass), and buy vinyl/CDs/shirts. Under the
 hood it's a Next.js app where:
 - **Sanity** is the CMS — PD edits releases, artists, and events at `/studio`, no code involved.
 - **Stripe** takes every payment.
-- **Supabase** stores user accounts and who-bought-what.
-- **Shopify** holds the merch catalog and receives fulfillment orders (shipped via Pirate Ship).
+- **Supabase** stores user accounts, digital purchases, and physical website orders with their manual shipping status.
+- **Shopify** still holds the storefront merch catalog. Physical website orders belong in [Merch Ops](https://www.daisychainsd.com/ops/merch), with shipping labels created in Pirate Ship. Its separate catalog/inventory replacement is unfinished.
 - A **webhook from Stripe** is the heart of it: when a payment lands, it records the purchase, emails the download link, creates the merch order, and adds the buyer to the newsletter — all automatically. If that webhook breaks, someone paid and got nothing, so it alerts PD by email immediately.
+- The September 22 order recovery restored four paid physical website orders. Check older orders against Pirate Ship, then mark shipped/unshipped in Ops; tracking is optional and CSV export does not mark shipped. The [recovery/deployment record](https://github.com/daisychainsd/daisychain-site/blob/main/ORDER-RECOVERY-2026-09-22.md) tracks activation of the direct-order webhook and hourly reconciliation.
 - An hourly **release-day cron** flips scheduled releases live at the right moment — nobody has to be awake at midnight on release day.
 
 ### 2. The subscriber sync — [`dc-email-api`](https://github.com/daisychainsd/dc-email-api) → dc-email-api.vercel.app
@@ -48,7 +49,7 @@ Beehiiv as snippets. No servers, nothing deployed — just design files.
 | **Stripe** | Takes all the money |
 | **Sanity** | The CMS — where release/artist/event content lives |
 | **Supabase** | Database + user accounts (who bought what) |
-| **Shopify** | Merch catalog + fulfillment orders (physical goods only) |
+| **Shopify** | Current storefront merch catalog; new website fulfillment is managed in Supabase Ops |
 | **Beehiiv** | The newsletter list and sender |
 | **Laylo** | SMS/drop-notification list (separate audience from the newsletter, on purpose) |
 | **Shotgun** | Ticketing for the club shows |
@@ -61,10 +62,10 @@ Beehiiv as snippets. No servers, nothing deployed — just design files.
 
 - **Ops dashboard** — daisychainsd.com/ops (password from PD). Live green/red
   health for every system, recent orders + 30-day revenue, newsletter stats,
-  and what's coming up. Check it before assuming anything is broken.
+  and what's coming up. The complete physical shipping queue is `/ops/merch`, not the recent-payments summary.
 - **Alert emails** — the systems email PD when something actually fails
   (a purchase that didn't record, a sync that crashed, an expired token, a
-  daily all-systems health check). Silence means healthy — nobody polls logs.
+  daily all-systems health check). No alert alone does not prove a job ran; inspect cron execution and compare paid Stripe sessions with Ops when an order is missing.
 - **Per-repo `OPERATIONS.md`** — each repo documents its own failure modes and
   exactly how to recover. That's the runbook; keep it updated when you change
   behavior.
@@ -78,8 +79,7 @@ Beehiiv as snippets. No servers, nothing deployed — just design files.
    `dev` on the website auto-deploys a preview at **dev.daisychainsd.com** —
    review there. `main` = production and is protected; changes land by PR.
 3. **House rules**:
-   - Never merge site changes to `main` without walking the purchase flow
-     end-to-end on the preview. Real buyers, real money.
+   - Verify site purchase/webhook changes end-to-end with isolated test fixtures before merging. Preview shares production services; never place fixture payments against shared live data.
    - The website's look is governed by the `design-system/` folder in the site
      repo — it's law, don't freestyle the brand.
    - `npm run build` locally before pushing; keep the preview green.
