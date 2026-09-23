@@ -25,6 +25,7 @@ Website music purchase → Stripe → Supabase digital entitlement → download
 Website merch purchase → Stripe → Supabase Merch Ops → Pirate Ship labels
                                       │                    │
                                       └── manual shipped/unshipped status
+Bandcamp physical purchase → dc-email-api merch feed → Supabase Merch Ops
 Website buyers → Beehiiv ← dc-email-api (Bandcamp / Shotgun / Laylo)
                     ↑
            chain-mail designs
@@ -32,11 +33,11 @@ Website buyers → Beehiiv ← dc-email-api (Bandcamp / Shotgun / Laylo)
 
 ## Physical website and Bandcamp orders
 
-Use [Merch Ops](https://www.daisychainsd.com/ops/merch), not the short recent-payments panel or Shopify drafts, to find orders and record shipping. Four paid website orders were restored on September 22, with shipping history left unverified for manual Pirate Ship reconciliation. Tracking is optional; downloading a shipping CSV is not proof of shipment.
+Merch Ops opens on Unshipped; Shipped and All orders provide history. Use [Merch Ops](https://www.daisychainsd.com/ops/merch), not the short recent-payments panel or Shopify drafts, to find orders and record shipping. Four paid website orders were restored on September 22, with shipping history left unverified for manual Pirate Ship reconciliation. Tracking is optional; downloading a shipping CSV is not proof of shipment.
 
 The [site recovery record](https://github.com/daisychainsd/daisychain-site/blob/main/ORDER-RECOVERY-2026-09-22.md) tracks the exact deployment status of the direct order webhook and hourly Stripe reconciliation. The [fulfillment SOP](https://github.com/daisychainsd/daisychain-ops/blob/main/SOP-merch-fulfillment.md) is the team workflow.
 
-Shopify still supplies products. Its replacement, product/image import and opening inventory count remain unfinished; `MERCH_BACKEND` is unset. The order-recovery deployment does not activate that migration. Physical Bandcamp merchandise enters Ops through a separate hourly feed from dc-email-api; digital music sales are excluded. Initial imports retain Bandcamp shipping status; later syncs preserve manual Ops status/notes/tracking. See [Bandcamp activation](https://github.com/daisychainsd/daisychain-site/blob/main/BANDCAMP-ORDERS-2026-09-22.md). Independent Shopify-native and booth orders remain separate.
+Shopify still supplies products. Its replacement, product/image import and opening inventory count remain unfinished; `MERCH_BACKEND` is unset. The order-recovery deployment does not activate that migration. Eight physical Bandcamp orders were imported and replay-verified September 22, retaining their recorded shipped dates. Physical Bandcamp merchandise enters Ops through a separate hourly feed from dc-email-api; digital music sales are excluded. Initial imports retain Bandcamp shipping status; later syncs preserve manual Ops status/notes/tracking. See [Bandcamp activation](https://github.com/daisychainsd/daisychain-site/blob/main/BANDCAMP-ORDERS-2026-09-22.md). Independent Shopify-native and booth orders remain separate.
 
 ## Health
 
