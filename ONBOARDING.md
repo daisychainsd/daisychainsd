@@ -21,7 +21,7 @@ downloads (or a $99 all-catalog pass), and buy vinyl/CDs/shirts. Under the
 hood it's a Next.js app where:
 - **Sanity** is the CMS — PD edits releases, artists, and events at `/studio`, no code involved.
 - **Stripe** takes every payment.
-- **Supabase** stores user accounts, digital purchases, and physical website orders with their manual shipping status.
+- **Supabase** stores user accounts, digital purchases, and physical website and Bandcamp orders with their manual shipping status.
 - **Shopify** still holds the storefront merch catalog. Physical website orders belong in [Merch Ops](https://www.daisychainsd.com/ops/merch), with shipping labels created in Pirate Ship. Its separate catalog/inventory replacement is unfinished.
 - A **webhook from Stripe** is the heart of it: when a payment lands, it records the purchase, emails the download link, creates the merch order, and adds the buyer to the newsletter — all automatically. If that webhook breaks, someone paid and got nothing, so it alerts PD by email immediately.
 - The September 22 order recovery restored four paid physical website orders. Check older orders against Pirate Ship, then mark shipped/unshipped in Ops; tracking is optional and CSV export does not mark shipped. The [recovery/deployment record](https://github.com/daisychainsd/daisychain-site/blob/main/ORDER-RECOVERY-2026-09-22.md) tracks activation of the direct-order webhook and hourly reconciliation.
@@ -32,7 +32,7 @@ Fans give their email in three places that have nothing to do with each other:
 buying on **Bandcamp**, buying show tickets on **Shotgun**, and signing up for
 drop alerts on **Laylo**. This small service pulls all of those into one place —
 the **Beehiiv** newsletter list — so every fan can be reached from a single
-list. Bandcamp and Shotgun are checked once a day; Laylo pushes in real time.
+list. Bandcamp and Shotgun subscriber sources are checked once a day; Laylo pushes in real time. Separately, physical Bandcamp merchandise is checked hourly for the Ops shipping queue. Digital music sales never enter that queue.
 It keeps its place with cursors in Redis, so it never re-processes old data,
 and duplicates are harmless. If a sync fails or a token expires, it emails PD.
 
@@ -53,7 +53,7 @@ Beehiiv as snippets. No servers, nothing deployed — just design files.
 | **Beehiiv** | The newsletter list and sender |
 | **Laylo** | SMS/drop-notification list (separate audience from the newsletter, on purpose) |
 | **Shotgun** | Ticketing for the club shows |
-| **Bandcamp** | Legacy sales channel — still a source of fan emails |
+| **Bandcamp** | Sales channel — physical merchandise feeds Merch Ops; buyer emails feed the newsletter |
 | **Resend** | Sends transactional email (download links, order confirmations, failure alerts) |
 | **Upstash Redis** | Tiny database the sync service uses to remember where it left off |
 | **Pirate Ship** | Where PD buys shipping labels for merch orders |
